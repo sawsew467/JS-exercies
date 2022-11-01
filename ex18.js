@@ -1,4 +1,9 @@
 const fs = require("fs");
+
+const types = ["GOOD", "AVERAGE", "WEAK"];
+const isIDExist = (id) => {
+  return students.some((student) => student.id === id) === false;
+};
 //
 const validate = (obj) => {
   if (students.some((student) => student.id === obj.id)) {
@@ -9,7 +14,7 @@ const validate = (obj) => {
     console.log("Name must be at least 2 characters");
     return false;
   }
-  if (+obj.age <= 0 || isNaN(+obj.balance)) {
+  if (+obj.age <= 0 || isNaN(+obj.age)) {
     console.log("Age must be a positive number and greater than zero");
     return false;
   }
@@ -30,8 +35,9 @@ const validate = (obj) => {
 //
 const create = (obj) => {
   try {
-    if (validate(obj) === false) return;
+    if (!validate(obj)) return;
     students.push(obj);
+    console.log("Create succeedfully");
   } catch (error) {
     console.log("Something went wrong");
   }
@@ -39,27 +45,30 @@ const create = (obj) => {
 
 const update = (id, obj) => {
   try {
-    if (validate(obj) === false) return;
-    students = students.map((student) => (student.id === id ? obj : student));
+    if (!validate(obj)) return;
+    students[students.findIndex((student) => student.id === id)] = obj;
+    console.log("Update succeedfully");
   } catch (error) {
     console.log("Something went wrong", error);
   }
 };
 
 const deleteOne = (id) => {
-  if (students.some((student) => student.id === id) === false) {
+  if (isIDExist(id)) {
     console.log("Your ID is not in the students");
     return;
   }
   students = students.filter((student) => student.id !== id);
+  console.log("Delete succeedfully");
 };
 
 const findById = (id) => {
-  if (students.some((student) => student.id === id) === false) {
+  if (isIDExist(id)) {
     console.log("Your ID is not in the students");
     return;
   }
-  return students.filter((student) => student.id === id)[0];
+  return students.find((student) => student.id === id);
+  console.log("Find succeedfully");
 };
 
 const findAll = (type, page, size) => {
@@ -85,10 +94,11 @@ const findAll = (type, page, size) => {
       console.log("Type must be 'GOOD' or 'AVERAGE' or 'WEAK'");
       break;
   }
+  console.log("Find succeedfully");
 };
 const students = JSON.parse(fs.readFileSync("./students.json"));
 create({
-  id: 6,
+  id: 10,
   name: "Thanh",
   age: "28",
   type: "GOOD",

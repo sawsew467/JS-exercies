@@ -1,4 +1,9 @@
 let students = [];
+const types = ["GOOD", "AVERAGE", "WEAK"];
+
+const isIDExist = (id) => {
+  return students.some((student) => student.id === id) === false;
+};
 //
 const validate = (obj) => {
   if (students.some((student) => student.id === obj.id)) {
@@ -17,7 +22,7 @@ const validate = (obj) => {
     console.log("Balance must be a positive number and greater than zero");
     return false;
   }
-  if (["GOOD", "AVERAGE", "WEAK"].includes(obj.type) === false) {
+  if (types.includes(obj.type) === false) {
     console.log("Type must be 'GOOD' or 'AVERAGE' or 'WEAK'");
     return false;
   }
@@ -30,7 +35,7 @@ const validate = (obj) => {
 //
 const create = (obj) => {
   try {
-    if (validate(obj) === false) return;
+    if (!validate(obj)) return;
     students.push(obj);
   } catch (error) {
     console.log("Something went wrong");
@@ -39,15 +44,15 @@ const create = (obj) => {
 
 const update = (id, obj) => {
   try {
-    if (validate(obj) === false) return;
-    students = students.map((student) => (student.id === id ? obj : student));
+    if (!validate(obj)) return;
+    students[students.findIndex((student) => student.id === id)] = obj;
   } catch (error) {
     console.log("Something went wrong", error);
   }
 };
 
 const deleteOne = (id) => {
-  if (students.some((student) => student.id === id) === false) {
+  if (isIDExist(id)) {
     console.log("Your ID is not in the students");
     return;
   }
@@ -55,11 +60,11 @@ const deleteOne = (id) => {
 };
 
 const findById = (id) => {
-  if (students.some((student) => student.id === id) === false) {
+  if (isIDExist(id)) {
     console.log("Your ID is not in the students");
     return;
   }
-  return students.filter((student) => student.id === id)[0];
+  return students.find((student) => student.id === id);
 };
 
 const findAll = (type, page, size) => {
@@ -127,6 +132,7 @@ create({
   balance: "7945",
   subjects: ["math", "English", "chemistry"],
 });
-
+deleteOne(4)
 console.log(students);
-console.log(findAll("", 3, 2));
+console.log();
+console.log(findAll("", 2, 2));
