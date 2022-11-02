@@ -2,7 +2,7 @@ let students = [];
 const types = ["GOOD", "AVERAGE", "WEAK"];
 
 const isIDExist = (id) => {
-  return students.some((student) => student.id === id) === true;
+  return students.some((student) => student.id === id);
 };
 const isOneOfType = (type) => {
   return types.includes(type);

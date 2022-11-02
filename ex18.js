@@ -2,7 +2,7 @@ const fs = require("fs");
 const types = ["GOOD", "AVERAGE", "WEAK"];
 
 const isIDExist = (id) => {
-  return students.some((student) => student.id === id) === true;
+  return students.some((student) => student.id === id);
 };
 const isOneOfType = (type) => {
   return types.includes(type);
@@ -39,6 +39,7 @@ const create = (obj) => {
     return;
   }
   students.push(obj);
+  fs.writeFileSync("./students.json", JSON.stringify(students, null, 2));
   console.log("Create successfully");
 };
 
@@ -50,6 +51,7 @@ const update = (id, obj) => {
   }
   const pos = students.findIndex((student) => student.id === id);
   students[pos] = obj;
+  fs.writeFileSync("./students.json", JSON.stringify(students, null, 2));
   console.log("Update successfully");
 };
 
@@ -59,6 +61,7 @@ const deleteOne = (id) => {
     return;
   }
   students = students.filter((student) => student.id !== id);
+  fs.writeFileSync("./students.json", JSON.stringify(students, null, 2));
   console.log("Delete successfully");
 };
 
@@ -100,6 +103,14 @@ const findAll = (type, page, size) => {
 };
 const students = JSON.parse(fs.readFileSync("./students.json"));
 
-console.log(findById(1));
+update(1, {
+  id: 10,
+  name: "Ngan",
+  age: "32",
+  type: "AVERAGE",
+  balance: "7945",
+  subjects: ["math", "English", "chemistry"],
+})
+console.log(students);
 
-fs.writeFileSync("./students.json", JSON.stringify(students));
+
