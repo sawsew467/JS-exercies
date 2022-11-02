@@ -1,15 +1,14 @@
 const fs = require("fs");
-
 const types = ["GOOD", "AVERAGE", "WEAK"];
+
 const isIDExist = (id) => {
-  return students.some((student) => student.id === id) === false;
+  return students.some((student) => student.id === id) === true;
+};
+const isOneOfType = (type) => {
+  return types.includes(type);
 };
 //
 const validate = (obj) => {
-  if (students.some((student) => student.id === obj.id)) {
-    console.log("ID must be unique");
-    return false;
-  }
   if (obj.name.length < 2) {
     console.log("Name must be at least 2 characters");
     return false;
@@ -22,7 +21,7 @@ const validate = (obj) => {
     console.log("Balance must be a positive number and greater than zero");
     return false;
   }
-  if (["GOOD", "AVERAGE", "WEAK"].includes(obj.type) === false) {
+  if (!isOneOfType(obj.type)) {
     console.log("Type must be 'GOOD' or 'AVERAGE' or 'WEAK'");
     return false;
   }
@@ -34,44 +33,48 @@ const validate = (obj) => {
 };
 //
 const create = (obj) => {
-  try {
-    if (!validate(obj)) return;
-    students.push(obj);
-    console.log("Create succeedfully");
-  } catch (error) {
-    console.log("Something went wrong");
+  if (!validate(obj)) return;
+  if (isIDExist(obj.id)) {
+    console.log("ID must be unique");
+    return;
   }
+  students.push(obj);
+  console.log("Create successfully");
 };
 
 const update = (id, obj) => {
-  try {
-    if (!validate(obj)) return;
-    students[students.findIndex((student) => student.id === id)] = obj;
-    console.log("Update succeedfully");
-  } catch (error) {
-    console.log("Something went wrong", error);
+  if (!validate(obj)) return;
+  if (!isIDExist(id)) {
+    console.log("Your ID is not in the students");
+    return;
   }
+  const pos = students.findIndex((student) => student.id === id);
+  students[pos] = obj;
+  console.log("Update successfully");
 };
 
 const deleteOne = (id) => {
-  if (isIDExist(id)) {
+  if (!isIDExist(id)) {
     console.log("Your ID is not in the students");
     return;
   }
   students = students.filter((student) => student.id !== id);
-  console.log("Delete succeedfully");
+  console.log("Delete successfully");
 };
 
 const findById = (id) => {
-  if (isIDExist(id)) {
+  if (!isIDExist(id)) {
     console.log("Your ID is not in the students");
     return;
   }
   return students.find((student) => student.id === id);
-  console.log("Find succeedfully");
 };
 
 const findAll = (type, page, size) => {
+  if (!isOneOfType(type) && type !== "") {
+    console.log(`Can not read type "${type}"`);
+    return;
+  }
   if (+page <= 0 || +size <= 0 || isNaN(page) || isNaN(size)) {
     console.log(
       "Page and Size must be 2 positive numbers and greater than zero"
@@ -94,15 +97,9 @@ const findAll = (type, page, size) => {
       console.log("Type must be 'GOOD' or 'AVERAGE' or 'WEAK'");
       break;
   }
-  console.log("Find succeedfully");
 };
 const students = JSON.parse(fs.readFileSync("./students.json"));
-create({
-  id: 10,
-  name: "Thanh",
-  age: "28",
-  type: "GOOD",
-  balance: 6867,
-  subjects: ["math", "physic", "chemistry"],
-});
+
+console.log(findById(1));
+
 fs.writeFileSync("./students.json", JSON.stringify(students));
